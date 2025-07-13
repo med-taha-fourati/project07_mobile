@@ -69,7 +69,9 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
               SizedBox(height: 24),
               ElevatedButton(
-                onPressed: () {}
+                onPressed: () {
+                  Navigator.pushReplacementNamed(context, '/chat');
+                }
                 ,
                 child: Text("Login"),
                 style: ButtonStyle(

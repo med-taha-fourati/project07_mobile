@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'screens/login_screen.dart';
 import 'screens/register_screen.dart';
+import 'screens/chat_screen.dart';
 
 void main() {
   runApp(SimpleMaterialChatApp());
@@ -19,6 +20,7 @@ class SimpleMaterialChatApp extends StatelessWidget {
       routes: {
         '/login': (context) => LoginScreen(),
         '/register': (context) => RegisterScreen(),
+        '/chat': (context) => ChatScreen()
       },
     );
   }
