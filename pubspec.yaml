@@ -14,6 +14,12 @@ dependencies:
     sdk: flutter
   cupertino_icons: ^1.0.6
   dio: ^5.4.3
+  flutter_launcher_icons: ^0.14.4
+
+flutter_launcher_icons:
+  android: true
+  ios: true
+  image_path: "assets/icon/icon.jpg"
 
 # No additional dependencies required for basic Material UI and navigation.
 
