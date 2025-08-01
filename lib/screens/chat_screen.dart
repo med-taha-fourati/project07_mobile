@@ -9,21 +9,7 @@ class ChatScreen extends StatefulWidget {
 }
 
 List<Message> messages = [
-  new Message(text: "hello chat", from: "adkfjasdlfkjas", username: "trbsh", createdAt: DateTime.now()),
-  new Message(text: "hello cdfsa", from: "adkfjasdlfkjas", username: "not trbsh", createdAt: DateTime.now()),
-  new Message(text: "hello chat", from: "adkfjasdlfkjas", username: "obv not trbsh", createdAt: DateTime.now()),
-  new Message(text: "hello chat", from: "adkfjasdlfkjas", username: "5assa", createdAt: DateTime.now()),
-  new Message(text: "hello chat", from: "adkfjasdlfkjas", username: "5assa", createdAt: DateTime.now()),
-  new Message(text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.", from: "adkfjasdlfkjas", username: "trbsh", createdAt: DateTime.now()),
-  new Message(text: "hello chat", from: "adkfjasdlfkjas", username: "5assa", createdAt: DateTime.now()),
-  new Message(text: "hello chat", from: "adkfjasdlfkjas", username: "trbsh", createdAt: DateTime.now()),
-  new Message(text: "hello chat", from: "adkfjasdlfkjas", username: "5assa", createdAt: DateTime.now()),
-  new Message(text: "hello chat", from: "adkfjasdlfkjas", username: "trbsh", createdAt: DateTime.now()),
-  new Message(text: "hello chat", from: "adkfjasdlfkjas", username: "5assa", createdAt: DateTime.now()),
-  new Message(text: "hello chat", from: "adkfjasdlfkjas", username: "trbsh", createdAt: DateTime.now()),
-  new Message(text: "hello chat", from: "adkfjasdlfkjas", username: "5assa", createdAt: DateTime.now()),
-  new Message(text: "hello chat", from: "adkfjasdlfkjas", username: "trbsh", createdAt: DateTime.now()),
-  new Message(text: "hello chat", from: "adkfjasdlfkjas", username: "5assa", createdAt: DateTime.now()),
+
 ];
 
 class _ChatState extends State<ChatScreen> {
@@ -54,7 +40,26 @@ class _ChatState extends State<ChatScreen> {
             Expanded(
               child: Container(
                 color: Colors.green.shade100,
-                child: ListView(
+                child: messages.isEmpty ?
+                Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                        children:[
+                          Text(
+                              "( • ᴖ • ｡)",
+                              style: TextStyle(fontSize: 48, color: Colors.green.shade700)
+                          ),
+                          Text(
+                              "No messages found...",
+                              style: TextStyle(fontSize: 18, color: Colors.green.shade700)
+                          ),
+                          Text(
+                              "Be the first one to type",
+                              style: TextStyle(fontSize: 18, color: Colors.green.shade700)
+                          ),
+                        ]
+                    )
+                ): ListView(
                   controller: _controller,
                   padding: EdgeInsets.all(8),
                   children: messages.map((msg) => Align(
