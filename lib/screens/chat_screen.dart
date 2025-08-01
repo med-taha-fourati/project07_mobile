@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:project_07_chat/models/message.dart';
+import '../models/user.dart';
+import '../api/controller.dart';
 
 class ChatScreen extends StatefulWidget {
   const ChatScreen({super.key});
@@ -13,14 +15,55 @@ List<Message> messages = [
 ];
 
 class _ChatState extends State<ChatScreen> {
+  late User user;
   final ScrollController _controller = new ScrollController();
   final TextEditingController _textController = new TextEditingController();
+
+  Future<void> _fetchMessages() async {
+    final msgs = await ChatController.getMessages();
+
+    setState(() {
+      messages = msgs;
+    });
+  }
+
+  // This gets the user sent from the /login page as an argument
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final args = ModalRoute.of(context)?.settings.arguments;
+    if (args != null && args is User) {
+      setState(() {
+        user = args;
+      });
+    }
+  }
+
   @override
   void initState() {
     super.initState();
+    _fetchMessages();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       _controller.jumpTo(_controller.position.maxScrollExtent);
     });
+  }
+
+  void _sendMessage() async {
+    if (_textController.text.trim().isEmpty) return;
+
+    final text = _textController.text.trim();
+    final success = await ChatController.sendMessage(user.id, user.username, text);
+
+    print(success);
+
+    if (success == 200) {
+      _textController.clear();
+      _fetchMessages();
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Failed to send message")),
+      );
+    }
   }
 
   @override
@@ -63,13 +106,13 @@ class _ChatState extends State<ChatScreen> {
                   controller: _controller,
                   padding: EdgeInsets.all(8),
                   children: messages.map((msg) => Align(
-                    alignment: (msg.username == "trbsh") ? Alignment.centerRight : Alignment.centerLeft,
+                    alignment: (msg.username == user.username) ? Alignment.centerRight : Alignment.centerLeft,
                     child: Container(
                       padding: EdgeInsets.all(12),
-                      margin: (msg.username == "trbsh") ? EdgeInsets.only(top: 6, bottom: 6, right: 3, left: 30) : EdgeInsets.only(top: 6, bottom: 6, right: 30, left: 3),
+                      margin: (msg.username == user.username) ? EdgeInsets.only(top: 6, bottom: 6, right: 3, left: 30) : EdgeInsets.only(top: 6, bottom: 6, right: 30, left: 3),
 
                       decoration: BoxDecoration(
-                        color: (msg.username == "trbsh") ? Colors.green.shade500 : Colors.grey.shade200,
+                        color: (msg.username == user.username) ? Colors.green.shade500 : Colors.grey.shade200,
                         borderRadius: BorderRadius.circular(16),
                           boxShadow: [
                             BoxShadow(
@@ -143,7 +186,7 @@ class _ChatState extends State<ChatScreen> {
 
 
                     ),
-                    onPressed: () {}
+                    onPressed: _sendMessage
                   )
                 ]
               )

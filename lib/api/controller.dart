@@ -3,7 +3,7 @@ import '../models/user.dart';
 import '../models/message.dart';
 
 class ChatController {
-  static const String baseUrl = 'http://localhost:5000/api';
+  static const String baseUrl = 'http://192.168.1.22:5000/api';
   static final Dio _dio = Dio(BaseOptions(baseUrl: baseUrl));
 
   static Future<bool> registerUser(String username, String password) async {
@@ -12,6 +12,8 @@ class ChatController {
         'username': username,
         'password': password
       });
+
+      print(response);
 
       return response.statusCode == 200;
     } catch (e) {
@@ -83,7 +85,7 @@ class ChatController {
     return [];
   }
 
-  static Future<bool> sendMessage(String from, String username, String text) async {
+  static Future<int?> sendMessage(String from, String username, String text) async {
     try {
       final response = await _dio.post('/message/addmsg', data: {
         'from': from,
@@ -91,9 +93,9 @@ class ChatController {
         'message': text
       });
 
-      return response.statusCode == 200;
+      return response.statusCode;
     } catch (e) {
-      return false;
+      return 500;
     }
   }
 
