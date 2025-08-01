@@ -1,7 +1,11 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:project_07_chat/models/message.dart';
+import 'package:socket_io_client/socket_io_client.dart';
 import '../models/user.dart';
 import '../api/controller.dart';
+import 'package:socket_io_client/socket_io_client.dart';
 
 class ChatScreen extends StatefulWidget {
   const ChatScreen({super.key});
@@ -15,9 +19,18 @@ List<Message> messages = [
 ];
 
 class _ChatState extends State<ChatScreen> {
+  Timer? _timer;
+  int count = 0;
+  late Socket _io;
   late User user;
   final ScrollController _controller = new ScrollController();
   final TextEditingController _textController = new TextEditingController();
+
+  void timerStart() {
+    _timer = Timer.periodic(Duration(milliseconds: 10), (_) {
+      _fetchMessages();
+    });
+  }
 
   Future<void> _fetchMessages() async {
     final msgs = await ChatController.getMessages();
@@ -40,9 +53,31 @@ class _ChatState extends State<ChatScreen> {
   }
 
   @override
+  void dispose() {
+    _timer?.cancel();
+    super.dispose();
+  }
+
+  @override
   void initState() {
     super.initState();
-    _fetchMessages();
+    //_fetchMessages();
+    timerStart();
+
+    // _io = io('http://192.168.1.22:3000', <String, dynamic>{
+    //   'transports': ['websocket'],
+    //   'autoConnect': false
+    // });
+    // _io.connect();
+    //
+    // _io.onConnect((_) => {
+    //   print("Conection established")
+    // });
+    //
+    // _io.onDisconnect((_) => {
+    //   print("Conection disistablished")
+    // });
+
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       _controller.jumpTo(_controller.position.maxScrollExtent);
     });
@@ -54,11 +89,19 @@ class _ChatState extends State<ChatScreen> {
     final text = _textController.text.trim();
     final success = await ChatController.sendMessage(user.id, user.username, text);
 
+    final msg = {
+      'from': user.id,
+      'username': user.username,
+      'message': text
+    };
+
     print(success);
 
     if (success == 200) {
       _textController.clear();
-      _fetchMessages();
+      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+        _controller.jumpTo(_controller.position.maxScrollExtent);
+      });
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text("Failed to send message")),
