@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../api/controller.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -9,8 +10,34 @@ FocusNode fn = new FocusNode();
 FocusNode fn2 = new FocusNode();
 
 class _LoginScreenState extends State<LoginScreen> {
+  final _formKey = GlobalKey<FormState>();
   String _username = '';
   String _password = '';
+
+  Future<void> SendLogin() async {
+    if (_formKey.currentState!.validate()) {
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (context) => Center(
+            child: CircularProgressIndicator()
+        ),
+      );
+
+      final user = await ChatController.login(_username, _password);
+
+      Navigator.pop(context);
+
+      if (user != null) {
+        Navigator.pushReplacementNamed(context, '/chat', arguments: user);
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text("Login Failed, check your credentials")
+        ));
+      }
+
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -23,6 +50,7 @@ class _LoginScreenState extends State<LoginScreen> {
         padding: const EdgeInsets.all(16.0),
         
         child: Form(
+          key: _formKey,
           child: 
           Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -69,9 +97,7 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
               SizedBox(height: 24),
               ElevatedButton(
-                onPressed: () {
-                  Navigator.pushReplacementNamed(context, '/chat');
-                }
+                onPressed: SendLogin
                 ,
                 child: Text("Login"),
                 style: ButtonStyle(

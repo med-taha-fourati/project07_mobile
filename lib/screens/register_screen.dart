@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../api/controller.dart';
 
 class RegisterScreen extends StatefulWidget {
   @override
@@ -11,6 +12,32 @@ FocusNode fn2 = new FocusNode();
 class _RegisterScreenState extends State<RegisterScreen> {
   String _username = '';
   String _password = '';
+  final _formKey = GlobalKey<FormState>();
+
+  Future<void> SendRegisterUser() async {
+    if (_formKey.currentState!.validate()) {
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (context) => Center(
+            child: CircularProgressIndicator()
+        ),
+      );
+
+      final user = await ChatController.registerUser(_username, _password);
+
+      Navigator.pop(context);
+
+      if (user) {
+        Navigator.pushReplacementNamed(context, '/login');
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: Text("Registration Failed!")
+        ));
+      }
+
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -19,6 +46,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Form(
+          key: _formKey,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -61,7 +89,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
               ),
               SizedBox(height: 24),
               ElevatedButton(
-                onPressed: () {},
+                onPressed: SendRegisterUser,
                 child: Text('Register'),
                 style: ButtonStyle(
                   foregroundColor: WidgetStateProperty.all<Color>(Colors.green),
