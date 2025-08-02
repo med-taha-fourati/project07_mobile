@@ -4,6 +4,8 @@ import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import '../models/user.dart';
 import 'package:flutter/material.dart';
 
+import '../api/persistence_json.dart';
+
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
 
@@ -13,8 +15,14 @@ class SettingsScreen extends StatefulWidget {
 
 class _SettingsScreenState extends State<SettingsScreen> {
   late User user;
+  late String _backgroundColorImport;
+  late String _foregroundColorImport;
+  late String _apiUrl;
+
   Color _currentBackgroundColor = Colors.green;
   Color _currentForegroundColor = Colors.green.shade900;
+  String apiUrl = '';
+
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
@@ -24,6 +32,29 @@ class _SettingsScreenState extends State<SettingsScreen> {
         user = args;
       });
     }
+  }
+
+  Future<void> loadData() async {
+    final _resultBC = await Persistence.LoadBackgroundColor();
+    final _resultFC = await Persistence.LoadForegroundColor();
+    final _resultAPI = await Persistence.LoadApiUrl();
+
+
+    setState(() {
+      _backgroundColorImport = _resultBC!;
+    });
+    setState(() {
+      _foregroundColorImport = _resultFC!;
+    });
+    setState(() {
+      _apiUrl = _resultAPI!;
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    loadData();
   }
 
   void _colorPicker(Color prevColor) {
@@ -38,6 +69,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
               onColorChanged: (Color color) {
                 setState(() {
                   prevColor = color;
+                  Persistence.SaveData(
+                      _currentBackgroundColor.toHexString(includeHashSign: true),
+                      _currentForegroundColor.toHexString(includeHashSign: true),
+                      apiUrl);
                 });
               },
               enableAlpha: false,

@@ -28,13 +28,14 @@ class _ChatState extends State<ChatScreen> {
 
   void timerStart() {
     _timer = Timer.periodic(Duration(milliseconds: 10), (_) {
+      if (!mounted) return;
       _fetchMessages();
     });
   }
 
   Future<void> _fetchMessages() async {
     final msgs = await ChatController.getMessages();
-
+    if (!mounted) return;
     setState(() {
       messages = msgs;
     });

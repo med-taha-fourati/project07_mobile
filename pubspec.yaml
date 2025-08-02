@@ -16,7 +16,8 @@ dependencies:
   dio: ^5.4.3
   flutter_launcher_icons: ^0.14.4
   socket_io_client: ^2.0.3
-  flutter_colorpicker: 
+  flutter_colorpicker: ^1.1.0
+  path_provider: ^2.1.1
 
 flutter_launcher_icons:
   android: true
