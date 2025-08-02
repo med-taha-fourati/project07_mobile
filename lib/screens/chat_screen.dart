@@ -116,7 +116,18 @@ class _ChatState extends State<ChatScreen> {
         backgroundColor: Colors.green.shade400,
         title: Text("The Chat Room"),
         actions: [
+          IconButton(
+            icon: Icon(Icons.settings),
+            onPressed: () {
+              Navigator.pushReplacementNamed(context, '/settings', arguments: user);
+            }
+          ),
+          IconButton(
+            icon: Icon(Icons.people),
+            onPressed: () {
 
+            }
+          )
         ],
       ),
 
