@@ -3,6 +3,7 @@ import 'screens/login_screen.dart';
 import 'screens/register_screen.dart';
 import 'screens/chat_screen.dart';
 import 'screens/settings_screen.dart';
+import 'screens/users_list_screen.dart';
 
 void main() {
   runApp(SimpleMaterialChatApp());
@@ -22,7 +23,8 @@ class SimpleMaterialChatApp extends StatelessWidget {
         '/login': (context) => LoginScreen(),
         '/register': (context) => RegisterScreen(),
         '/chat': (context) => ChatScreen(),
-        '/settings': (context) => SettingsScreen()
+        '/settings': (context) => SettingsScreen(),
+        '/users': (context) => UsersListScreen()
       },
     );
   }

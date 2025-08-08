@@ -126,7 +126,7 @@ class _ChatState extends State<ChatScreen> {
           IconButton(
             icon: Icon(Icons.people),
             onPressed: () {
-
+              Navigator.pushReplacementNamed(context, '/users', arguments: user);
             }
           )
         ],
